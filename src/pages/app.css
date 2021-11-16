@@ -1,0 +1,3 @@
+.spaced-rows > *:not(:first-child) {
+  margin-top: 1em;
+}
