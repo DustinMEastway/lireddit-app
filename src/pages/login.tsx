@@ -3,13 +3,13 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 
 import { InputField, Wrapper } from '../components';
-import { useUserCreateMutation } from '../generated/graphql';
+import { useUserLoginMutation } from '../generated/graphql';
 
-export interface RegisterProps {
+export interface LoginProps {
 };
 
-export const Register: React.FC<RegisterProps> = ({}) => {
-  const [ {}, userCreate ] = useUserCreateMutation();
+export const Login: React.FC<LoginProps> = ({}) => {
+  const [ {}, userCreate ] = useUserLoginMutation();
   const router = useRouter();
 
   return (
@@ -29,11 +29,11 @@ export const Register: React.FC<RegisterProps> = ({}) => {
         <Form className="spaced-rows">
           <InputField label="Username" name="username" placeholder="username" />
           <InputField label="Password" name="password" placeholder="password" type="password" />
-          <Button isLoading={isSubmitting} type="submit">Register</Button>
+          <Button isLoading={isSubmitting} type="submit">Log in</Button>
         </Form>
       )}</Formik>
     </Wrapper>
   );
 };
 
-export default Register;
+export default Login;
