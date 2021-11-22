@@ -1,0 +1,6 @@
+query UserDetails {
+  userDetails {
+    id
+    username
+  }
+}
