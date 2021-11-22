@@ -1,6 +1,5 @@
 mutation UserCreate($input: UserLoginInput!) {
   userCreate(input: $input) {
-    id
-    username
+    ...UserDetails
   }
 }

@@ -1,17 +1,21 @@
 import { Center, Divider, Stack } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
+import { useToast } from '@chakra-ui/toast';
+
+import { useUserDetailsQuery, useUserLogoutMutation } from '../generated/graphql';
 import { Link } from './link';
-import { useUserDetailsQuery } from '../generated/graphql';
 
 export interface NavBarProps {
 };
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
-  const [{ data, fetching }] = useUserDetailsQuery();
+  const [ { fetching: logoutFetching }, logout ] = useUserLogoutMutation();
+  const [ { data, fetching: userDetailsFetching } ] = useUserDetailsQuery();
+  const toast = useToast();
 
   let leftNav: JSX.Element | null;
   let rightNav: JSX.Element | null;
-  if (fetching) {
+  if (userDetailsFetching) {
     leftNav = null;
     rightNav = null;
   } else if (!data?.userDetails) {
@@ -22,7 +26,13 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     rightNav = null;
   } else {
     leftNav = <Center>Hello, {data.userDetails.username}</Center>;
-    rightNav = <Button>Log out</Button>;
+    rightNav = <Button
+      isLoading={logoutFetching}
+      onClick={async () => {
+        await logout();
+        toast({ status: 'success', title: 'Logged out' });
+      }}
+    >Log out</Button>;
   }
 
   return <>

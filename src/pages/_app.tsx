@@ -8,7 +8,8 @@ import {
   UserCreateMutation,
   UserDetailsDocument,
   UserDetailsQuery,
-  UserLoginMutation
+  UserLoginMutation,
+  UserLogoutMutation
 } from '../generated/graphql';
 import { default as theme } from '../theme';
 import './app.css';
@@ -34,9 +35,7 @@ const client = createClient({
             { query: UserDetailsDocument },
             result,
             (createResult, userDetailsData) => {
-              return {
-                userDetails: createResult.userCreate
-              };
+              return { userDetails: createResult.userCreate };
             }
           );
         },
@@ -47,9 +46,18 @@ const client = createClient({
             { query: UserDetailsDocument },
             result,
             (loginResult, userDetailsData) => {
-              return {
-                userDetails: loginResult.userLogin
-              };
+              return { userDetails: loginResult.userLogin };
+            }
+          );
+        },
+        userLogout: (result, args, cache, info) => {
+          // update userDetails when userLogout is called
+          updateQuery<UserLogoutMutation, UserDetailsQuery>(
+            cache,
+            { query: UserDetailsDocument },
+            result,
+            (logoutResult, userDetailsData) => {
+              return { userDetails: null };
             }
           );
         }

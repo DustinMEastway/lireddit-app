@@ -1,6 +1,5 @@
 query UserDetails {
   userDetails {
-    id
-    username
+    ...UserDetails
   }
 }
