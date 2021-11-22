@@ -1,9 +1,11 @@
 import { Button } from '@chakra-ui/button';
+import { useToast } from '@chakra-ui/toast';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 
 import { InputField, Wrapper } from '../components';
 import { useUserCreateMutation } from '../generated/graphql';
+import { handleFormErrorMessages } from '../lib';
 
 export interface RegisterProps {
 };
@@ -11,6 +13,7 @@ export interface RegisterProps {
 export const Register: React.FC<RegisterProps> = ({}) => {
   const [ {}, userCreate ] = useUserCreateMutation();
   const router = useRouter();
+  const toast = useToast();
 
   return (
     <Wrapper size="small">
@@ -18,10 +21,7 @@ export const Register: React.FC<RegisterProps> = ({}) => {
         initialValues={{ password: '', username: '' }}
         onSubmit={async (values, { setErrors }) => {
           const response = await userCreate({ input: values });
-          const errors = response.error?.graphQLErrors[0].extensions.children as Record<string, string[]> | undefined;
-          if (errors) {
-            setErrors(errors);
-          } else {
+          if (handleFormErrorMessages(response, setErrors, toast)) {
             router.push('/');
           }
         }}
