@@ -1,6 +1,8 @@
-import { NavBar } from '../components';
-import { useUserDetailsQuery } from '../generated/graphql';
 import { useRouter } from 'next/router';
+
+import { NavBar } from '../components';
+import { withUrqlClient } from '../core';
+import { useUserDetailsQuery } from '../generated/graphql';
 
 export const Index: React.FC = () => {
   const [{ data, fetching }] = useUserDetailsQuery();
@@ -10,7 +12,10 @@ export const Index: React.FC = () => {
     router.push('/login');
   }
 
-  return (fetching) ? null : <>Hello World!</>;
+  return (fetching) ? null : <>
+    <NavBar />
+    Hello World!
+  </>;
 };
 
-export default Index;
+export default withUrqlClient()(Index);

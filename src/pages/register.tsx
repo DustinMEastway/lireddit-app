@@ -3,7 +3,8 @@ import { useToast } from '@chakra-ui/toast';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 
-import { InputField, Wrapper } from '../components';
+import { InputField, NavBar, Wrapper } from '../components';
+import { withUrqlClient } from '../core';
 import { useUserCreateMutation } from '../generated/graphql';
 import { handleFormErrorMessages } from '../lib';
 
@@ -15,7 +16,8 @@ export const Register: React.FC<RegisterProps> = ({}) => {
   const router = useRouter();
   const toast = useToast();
 
-  return (
+  return <>
+    <NavBar />
     <Wrapper size="small">
       <Formik
         initialValues={{ password: '', username: '' }}
@@ -33,7 +35,7 @@ export const Register: React.FC<RegisterProps> = ({}) => {
         </Form>
       )}</Formik>
     </Wrapper>
-  );
+  </>;
 };
 
-export default Register;
+export default withUrqlClient()(Register);
