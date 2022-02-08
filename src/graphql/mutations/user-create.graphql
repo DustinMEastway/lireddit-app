@@ -1,4 +1,4 @@
-mutation UserCreate($input: UserLoginInput!) {
+mutation UserCreate($input: UserCreateInput!) {
   userCreate(input: $input) {
     ...UserDetails
   }

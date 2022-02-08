@@ -20,7 +20,7 @@ export const Register: React.FC<RegisterProps> = ({}) => {
     <NavBar />
     <Wrapper size="small">
       <Formik
-        initialValues={{ password: '', username: '' }}
+        initialValues={{ email: '', password: '', username: '' }}
         onSubmit={async (values, { setErrors }) => {
           const response = await userCreate({ input: values });
           if (handleFormErrorMessages(response, setErrors, toast)) {
@@ -29,6 +29,7 @@ export const Register: React.FC<RegisterProps> = ({}) => {
         }}
       >{({ isSubmitting }) => (
         <Form className="spaced-rows">
+          <InputField label="Email" name="email" placeholder="email" />
           <InputField label="Username" name="username" placeholder="username" />
           <InputField label="Password" name="password" placeholder="password" type="password" />
           <Button isLoading={isSubmitting} type="submit">Register</Button>
