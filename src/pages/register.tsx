@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { InputField, NavBar, Wrapper } from '../components';
 import { withUrqlClient } from '../core';
 import { useUserCreateMutation } from '../generated/graphql';
-import { handleFormErrorMessages } from '../lib';
+import { handleFormErrorMessages } from '../lib/client';
 
 export interface RegisterProps {
 };
