@@ -6,11 +6,7 @@ import { useRouter } from 'next/router';
 
 import { InputField, NavBar, Wrapper } from '../../components';
 import { withUrqlClient } from '../../core';
-import {
-  handleFormErrorMessages,
-  isFormControlError,
-  toastFormControlError
-} from '../../lib/client';
+import { handleFormErrorMessages, toastFormControlError } from '../../lib/client';
 import { useUserChangePasswordMutation } from '../../generated/graphql';
 
 export const ChangePassword: NextPage<{ token: string; }> = ({ token }) => {

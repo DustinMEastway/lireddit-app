@@ -8,7 +8,7 @@ import {
   FormErrorMessages,
   FormGroupErrorMessages
 } from '../../forms';
-import { isFormControlError } from './form-error-messages';
+import { isFormError } from './is-form-error';
 
 export function toastFormControlError(
   result: OperationResult,
@@ -19,8 +19,8 @@ export function toastFormControlError(
   let controlErrors: FormErrorMessages<any> | null = null;
   result.error?.graphQLErrors.map((graphQlError): void => {
     let toastConfig: Partial<UseToastOptions> | null = null;
-    if (isFormControlError(graphQlError)) {
-      const formErrors = graphQlError.extensions.formControlError;
+    if (isFormError(graphQlError)) {
+      const formErrors = graphQlError.extensions.formControlError as FormGroupErrorMessages<any>;
       controlErrors = formErrors.children && formErrors.children[controlName] || null;
       if (controlErrors) {
         toast({
