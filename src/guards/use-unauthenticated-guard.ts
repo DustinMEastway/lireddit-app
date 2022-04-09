@@ -3,15 +3,16 @@ import { useEffect, useState } from 'react';
 
 import { useUserDetailsQuery } from '../generated/graphql';
 
-export const useAuthenticatedGuard = () => {
+export const useUnauthenticatedGuard = () => {
   const router = useRouter();
   const [ success, setSuccess ] = useState<boolean | null>(null);
   const [ { data, fetching } ] = useUserDetailsQuery();
 
   useEffect(() => {
-    const newSuccess = (fetching) ? null : data?.userDetails != null;
+    const newSuccess = (fetching) ? null : data?.userDetails == null;
     if (newSuccess == false) {
-      router.push(`/login?route=${router.route}`);
+      const { route } = router.query;
+      router.push((typeof route === 'string') ? route : '/');
     }
     setSuccess(newSuccess);
   }, [ data, fetching, router ]);
