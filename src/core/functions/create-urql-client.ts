@@ -1,6 +1,6 @@
 import { cacheExchange, Cache, QueryInput } from '@urql/exchange-graphcache';
 import { withUrqlClient as nextUrqlWithUrqlClient } from 'next-urql';
-import { dedupExchange, fetchExchange,  } from 'urql';
+import { dedupExchange, fetchExchange  } from 'urql';
 
 import {
   UserCreateMutation,
@@ -9,6 +9,7 @@ import {
   UserLoginMutation,
   UserLogoutMutation
 } from '../../generated/graphql';
+import { authenticationErrorExchange } from './exchanges';
 
 function updateQuery<ResultT, QueryT>(
   cache: Cache,
@@ -63,6 +64,7 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
           }
         }
       }),
+      authenticationErrorExchange,
       ssrExchange,
       fetchExchange
     ],

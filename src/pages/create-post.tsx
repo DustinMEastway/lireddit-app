@@ -7,10 +7,7 @@ import { useRouter } from 'next/router';
 import { InputField, NavBar, Wrapper } from '../components';
 import { withUrqlClient } from '../core';
 import { usePostCreateMutation } from '../generated/graphql';
-import {
-  handleAuthenticationErrorMessages,
-  handleFormErrorMessages
-} from '../lib/client';
+import { handleFormErrorMessages } from '../lib/client';
 
 export const CreatePost: React.FC = () => {
   const [ {}, postCreate ] = usePostCreateMutation();
@@ -24,9 +21,7 @@ export const CreatePost: React.FC = () => {
         initialValues={{ text: '', title: '' }}
         onSubmit={async (values, { setErrors }) => {
           const response = await postCreate({ input: values });
-          if (!handleAuthenticationErrorMessages(response, toast)) {
-            router.push('/login');
-          } else if (handleFormErrorMessages(response, setErrors, toast)) {
+          if (handleFormErrorMessages(response, setErrors, toast)) {
             toast({
               isClosable: true,
               status: 'success',
