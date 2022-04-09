@@ -5,5 +5,5 @@ import { FormErrorMessages } from '../../forms';
 export function isFormError<T = any>(
   error: GraphQLError
 ): error is GraphQLError & { extensions: { formControlError: FormErrorMessages<T>; } } {
-  return error && error.extensions.code === 'FORM_CONTROL_ERROR';
+  return error && error.extensions.code === 'FORM_ERROR';
 }

@@ -16,30 +16,22 @@ export function handleFormErrorMessages(
   toast: ReturnType<typeof useToast>
 ): boolean {
   result.error?.graphQLErrors.map((graphQlError): void => {
-    let toastConfig: Partial<{ description: string; title: string; }> | null = null;
-    if (isFormError(graphQlError)) {
-      const formErrors = graphQlError.extensions.formControlError;
-      if ((formErrors as FormArrayErrorMessages<any> | FormGroupErrorMessages<any>).children) {
-        setErrors(mapErrorMessages(formErrors) as FormikErrors<any>);
-      } else if (formErrors.control) {
-        toastConfig = {
-          description: formErrors.control.join('\t\n'),
-          title: graphQlError.message
-        };
-      } else {
-        toastConfig = {
-          title: graphQlError.message
-        };
-      }
+    if (!isFormError(graphQlError)) {
+      return;
     }
 
-    if (toastConfig) {
-      toast({
-        isClosable: true,
-        status: 'error',
-        ...toastConfig
-      });
+    const formErrors = graphQlError.extensions.formControlError;
+    if ((formErrors as FormArrayErrorMessages<any> | FormGroupErrorMessages<any>).children) {
+      setErrors(mapErrorMessages(formErrors) as FormikErrors<any>);
+      return;
     }
+
+    toast({
+      description: (formErrors.control) ? formErrors.control.join('\t\n') : null,
+      isClosable: true,
+      status: 'error',
+      title: graphQlError.message
+    });
   });
 
   return !result.error;
