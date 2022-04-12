@@ -1,3 +1,4 @@
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -11,7 +12,12 @@ export const useAuthenticatedGuard = () => {
   useEffect(() => {
     const newSuccess = (fetching) ? null : data?.userDetails != null;
     if (newSuccess == false) {
-      router.push(`/login?route=${router.route}`);
+      createStandaloneToast()({
+        isClosable: true,
+        status: 'error',
+        title: 'Please log in to access this route.'
+      });
+      router.push(`/login?route=${router.asPath}`);
     }
     setSuccess(newSuccess);
   }, [ data, fetching, router ]);

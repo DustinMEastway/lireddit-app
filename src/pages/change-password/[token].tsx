@@ -8,15 +8,18 @@ import { InputField, Page } from '../../components';
 import { withUrqlClient } from '../../core';
 import { handleFormErrorMessages, toastFormControlError } from '../../lib/client';
 import { useUserChangePasswordMutation } from '../../generated/graphql';
+import { useChangePasswordGuard } from '../../guards';
 
-export const ChangePassword: NextPage<{ token: string; }> = ({ token }) => {
+const changePasswordGuards = [ useChangePasswordGuard ];
+
+export const ChangePassword: NextPage = () => {
   const [ , userChangePassword ] = useUserChangePasswordMutation();
   const router = useRouter();
   const toast = useToast();
 
-  return <Page size="small">
+  return <Page guards={changePasswordGuards} size="small">
     <Formik
-      initialValues={{ password: '', token }}
+      initialValues={{ password: '', token: router.query.token as string }}
       onSubmit={async (values, { setErrors }) => {
         const response = await userChangePassword({ input: values });
         if (!toastFormControlError(response, toast, 'token', 'Token')) {
@@ -32,12 +35,6 @@ export const ChangePassword: NextPage<{ token: string; }> = ({ token }) => {
       </Form>
     )}</Formik>
   </Page>;
-};
-
-ChangePassword.getInitialProps = (context) => {
-  return {
-    token: context.query.token as string
-  }
 };
 
 export default withUrqlClient()(ChangePassword);
