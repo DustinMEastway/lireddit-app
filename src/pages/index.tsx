@@ -6,6 +6,7 @@ import {
   Stack,
   Text
 } from '@chakra-ui/layout';
+import { CircularProgress } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { Link, Page } from '../components';
@@ -17,7 +18,7 @@ export const Index: React.FC = () => {
     cursor: null as string | null,
     limit: 10
   });
-  const [ { data, fetching } ] = usePostListQuery({ variables: { input: pagination } });
+  const [ { data, fetching, stale } ] = usePostListQuery({ variables: { input: pagination } });
 
   if (!data && !fetching) {
     return <>Something went wrong while getting posts. Please try again.</>;
@@ -32,9 +33,7 @@ export const Index: React.FC = () => {
         Create Post &gt;
       </Link>
     </Flex>
-    {(!data) ? (
-      <Text>Loading...</Text>
-    ) : (
+    {(!data) ? null : (
       <Stack spacing="1rem">
         {data.postList.map((post) =>
           <Box
@@ -56,19 +55,19 @@ export const Index: React.FC = () => {
         )}
       </Stack>
     )}
-    {(!data) ? null : (
-      <Flex align="center" paddingY="1rem">
-        <Button
-          margin="auto"
-          onClick={() => setPagination({
-            ...pagination,
-            cursor: data.postList[data.postList.length - 1].createdAt
-          })}
-        >
-          Load More
-        </Button>
-      </Flex>
-    )}
+    <Flex align="center" paddingY="1rem">
+      {(!data || stale) ? <CircularProgress isIndeterminate margin="auto" /> : (
+          <Button
+            margin="auto"
+            onClick={() => setPagination({
+              ...pagination,
+              cursor: data.postList[data.postList.length - 1].createdAt
+            })}
+          >
+            Load More
+          </Button>
+      )}
+    </Flex>
   </Page>;
 };
 
