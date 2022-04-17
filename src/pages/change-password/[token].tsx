@@ -24,9 +24,9 @@ export const ChangePassword: NextPage = () => {
         const response = await userChangePassword({ input: values });
         if (!toastFormControlError(response, toast, 'token', 'Token')) {
           router.push('/forgot-password');
+        } else if (handleFormErrorMessages(response, setErrors, toast)) {
+          router.push('/');
         }
-
-        handleFormErrorMessages(response, setErrors, toast);
       }}
     >{({ isSubmitting }) => (
       <Form className="spaced-rows">

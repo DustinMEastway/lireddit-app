@@ -19,9 +19,9 @@ export const ForgotPassword: React.FC = () => {
 
   return <Page guards={forgotPasswordGuards} size="small">
     <Formik
-      initialValues={{ username: '' }}
-      onSubmit={async ({ username }, { setErrors }) => {
-        const response = await userForgotPassword({ input: username });
+      initialValues={{ input: '' }}
+      onSubmit={async ({ input }, { setErrors }) => {
+        const response = await userForgotPassword({ input });
         if (handleFormErrorMessages(response, setErrors, toast)) {
           toast({
             description: 'Check inbox to reset password.',
@@ -34,7 +34,7 @@ export const ForgotPassword: React.FC = () => {
       }}
     >{({ isSubmitting }) => (
       <Form className="spaced-rows">
-        <InputField label="Username" name="username" placeholder="username" />
+        <InputField label="Username" name="input" placeholder="username" />
         <Stack direction="row" justifyContent="end" spacing="1rem">
           <Button isLoading={isSubmitting} type="submit">Request Password Reset</Button>
         </Stack>

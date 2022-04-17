@@ -10,6 +10,7 @@ import {
   UserLogoutMutation
 } from '../../generated/graphql';
 import { authenticationErrorExchange } from './exchanges';
+import { cursorPagination } from './resolvers';
 
 function updateQuery<ResultT, QueryT>(
   cache: Cache,
@@ -26,6 +27,11 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
     exchanges: [
       dedupExchange,
       cacheExchange({
+        resolvers: {
+          Query: {
+            postList: cursorPagination()
+          }
+        },
         updates: {
           Mutation: {
             userCreate: (result, args, cache, info) => {
