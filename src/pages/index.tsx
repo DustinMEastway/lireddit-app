@@ -19,11 +19,29 @@ export const Index: React.FC = () => {
     limit: 10
   });
   const [ { data, fetching, stale } ] = usePostListQuery({ variables: { input: pagination } });
+  const posts = data?.postList.items;
 
-  if (!data && !fetching) {
+  if (!fetching && !data) {
     return <>Something went wrong while getting posts. Please try again.</>;
-  } else if (!data?.postList.length && !fetching) {
+  } else if (!fetching && !posts?.length) {
     return <>No posts to display. Quick, create a post to be the first!</>;
+  }
+
+  let loadItemsElement: JSX.Element | null = null;
+  if (!posts || stale) {
+    loadItemsElement = <CircularProgress isIndeterminate margin="auto" />;
+  } else if (data?.postList.hasMore) {
+    loadItemsElement = (
+      <Button
+        margin="auto"
+        onClick={() => setPagination({
+          ...pagination,
+          cursor: posts[posts.length - 1].createdAt
+        })}
+      >
+        Load More
+      </Button>
+    );
   }
 
   return <Page>
@@ -33,9 +51,9 @@ export const Index: React.FC = () => {
         Create Post &gt;
       </Link>
     </Flex>
-    {(!data) ? null : (
+    {(!posts) ? null : (
       <Stack spacing="1rem">
-        {data.postList.map((post) =>
+        {posts.map((post) =>
           <Box
             borderWidth="1px"
             key={post.id}
@@ -55,19 +73,11 @@ export const Index: React.FC = () => {
         )}
       </Stack>
     )}
-    <Flex align="center" paddingY="1rem">
-      {(!data || stale) ? <CircularProgress isIndeterminate margin="auto" /> : (
-          <Button
-            margin="auto"
-            onClick={() => setPagination({
-              ...pagination,
-              cursor: data.postList[data.postList.length - 1].createdAt
-            })}
-          >
-            Load More
-          </Button>
-      )}
-    </Flex>
+    {(!loadItemsElement) ? null : (
+      <Flex align="center" paddingY="1rem">
+        {loadItemsElement}
+      </Flex>
+    )}
   </Page>;
 };
 

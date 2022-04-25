@@ -12,15 +12,22 @@ export function cursorPagination(): Resolver {
       return;
     }
 
-    const entityIds = new Set<string>();
-    fields.forEach((field) => {
-      const fieldEntityIds = cache.resolveFieldByKey(parentKey, field.fieldKey) as string[];
-      fieldEntityIds.forEach(entityIds.add.bind(entityIds));
-    });
-
     const currentFieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
     info.partial = !cache.resolveFieldByKey(parentKey, currentFieldKey);
 
-    return Array.from(entityIds.values());
+    const allItemKeys = new Set<string>();
+    let hasMore = true;
+    fields.forEach((field) => {
+      const listKey = cache.resolveFieldByKey(parentKey, field.fieldKey) as string;
+      const itemKeys = cache.resolve(listKey, 'items') as string[];
+      hasMore = hasMore && (cache.resolve(listKey, 'hasMore') as boolean);
+      itemKeys.forEach(allItemKeys.add.bind(allItemKeys));
+    });
+
+    return {
+      __typename: 'PostListOutput',
+      hasMore,
+      items: Array.from(allItemKeys.values())
+    };
   };
 }

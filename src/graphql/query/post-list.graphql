@@ -1,9 +1,12 @@
 query PostList($input: PostListInput) {
   postList(input: $input) {
-    id
-    textSnippet
-    title
-    createdAt
-    updatedAt
+    hasMore
+    items {
+      id
+      textSnippet
+      title
+      createdAt
+      updatedAt
+    }
   }
 }

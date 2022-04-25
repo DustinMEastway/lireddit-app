@@ -20,11 +20,11 @@ function sizeToPixels(size: WrapperPropsSize = 'medium'): number {
 
 export const Wrapper: React.FC<WrapperProps> = ({ children, size }) => {
   return <Box
-    marginTop="8px"
     marginX="auto"
+    marginY="1rem"
     maxWidth={`${sizeToPixels(size)}px`}
     width="100%"
-  >{
-    children
-  }</Box>;
+  >
+    {children}
+  </Box>;
 };

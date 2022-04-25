@@ -27,6 +27,9 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
     exchanges: [
       dedupExchange,
       cacheExchange({
+        keys: {
+          PostListOutput: () => null
+        },
         resolvers: {
           Query: {
             postList: cursorPagination()
