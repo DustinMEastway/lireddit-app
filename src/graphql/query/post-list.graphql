@@ -2,11 +2,16 @@ query PostList($input: PostListInput) {
   postList(input: $input) {
     hasMore
     items {
+      createdAt
+      creator {
+        id
+        username
+      }
       id
       textSnippet
       title
-      createdAt
       updatedAt
+      votes
     }
   }
 }

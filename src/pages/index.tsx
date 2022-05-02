@@ -3,6 +3,7 @@ import {
   Box,
   Flex,
   Heading,
+  HStack,
   Stack,
   Text
 } from '@chakra-ui/layout';
@@ -11,13 +12,15 @@ import { useState } from 'react';
 
 import { Link, Page } from '../components';
 import { withUrqlClient } from '../core';
-import { usePostListQuery } from '../generated/graphql';
+import { usePostListQuery, PostListInput } from '../generated/graphql';
+
+const defaultPostListInput: PostListInput = {
+  cursor: null,
+  limit: 15
+};
 
 export const Index: React.FC = () => {
-  const [ pagination, setPagination ] = useState({
-    cursor: null as string | null,
-    limit: 10
-  });
+  const [ pagination, setPagination ] = useState(defaultPostListInput);
   const [ { data, fetching, stale } ] = usePostListQuery({ variables: { input: pagination } });
   const posts = data?.postList.items;
 
@@ -60,7 +63,10 @@ export const Index: React.FC = () => {
             padding="1rem"
             shadow="md"
           >
-            <Heading>{post.title}</Heading>
+            <HStack flexWrap="wrap">
+              <Heading as='h3' size='sm'>{post.title}</Heading>
+              <Text>Posted by {post.creator.username}</Text>
+            </HStack>
             <Text
               marginTop="0.5rem"
               overflow="hidden"

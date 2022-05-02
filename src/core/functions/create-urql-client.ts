@@ -37,6 +37,13 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
         },
         updates: {
           Mutation: {
+            postCreate: (_result, _args, cache, _info) => {
+              cache.inspectFields('Query').filter((fieldInfo) => {
+                return fieldInfo.fieldName === 'postList'
+              }).forEach((fieldInfo) => {
+                cache.invalidate('Query', 'postList', fieldInfo.arguments);
+              });
+            },
             userCreate: (result, args, cache, info) => {
               // update userDetails when userCreate is called
               updateQuery<UserCreateMutation, UserDetailsQuery>(
