@@ -1,0 +1,12 @@
+fragment PostSummary on Post {
+  createdAt
+  creator {
+    id
+    username
+  }
+  id
+  textSnippet
+  title
+  updatedAt
+  votes
+}

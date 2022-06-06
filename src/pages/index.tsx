@@ -1,16 +1,17 @@
 import { Button } from '@chakra-ui/button';
 import {
-  Box,
   Flex,
   Heading,
-  HStack,
-  Stack,
-  Text
+  Stack
 } from '@chakra-ui/layout';
 import { CircularProgress } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import { Link, Page } from '../components';
+import {
+  Link,
+  Page,
+  PostSummary
+} from '../components';
 import { withUrqlClient } from '../core';
 import { usePostListQuery, PostListInput } from '../generated/graphql';
 
@@ -57,25 +58,7 @@ export const Index: React.FC = () => {
     {(!posts) ? null : (
       <Stack spacing="1rem">
         {posts.map((post) =>
-          <Box
-            borderWidth="1px"
-            key={post.id}
-            padding="1rem"
-            shadow="md"
-          >
-            <HStack flexWrap="wrap">
-              <Heading as='h3' size='sm'>{post.title}</Heading>
-              <Text>Posted by {post.creator.username}</Text>
-            </HStack>
-            <Text
-              marginTop="0.5rem"
-              overflow="hidden"
-              textOverflow="ellipsis"
-              whiteSpace="pre"
-            >
-              {post.textSnippet}
-            </Text>
-          </Box>
+          <PostSummary key={post.id} post={post} />
         )}
       </Stack>
     )}
