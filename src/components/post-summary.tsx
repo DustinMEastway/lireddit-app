@@ -20,9 +20,7 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
   const [ { fetching: isVoteLoading } , updootVote ] = useUpdootVoteMutation();
 
   const vote = async (vote: number) => {
-    if (vote === post.userVote) {
-      return;
-    }
+    vote = (vote === post.userVote) ? 0 : vote;
 
     await updootVote({ input: { postId: post.id, vote } });
   };
