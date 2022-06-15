@@ -20,6 +20,10 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
   const [ { fetching: isVoteLoading } , updootVote ] = useUpdootVoteMutation();
 
   const vote = async (vote: number) => {
+    if (vote === post.userVote) {
+      return;
+    }
+
     await updootVote({ input: { postId: post.id, vote } });
   };
 
@@ -54,7 +58,7 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
           icon={<ArrowUpIcon />}
           isLoading={isVoteLoading}
           onClick={() => vote(1)}
-          variant="outline"
+          variant={(post.userVote === 1) ? 'solid' : 'outline'}
         />
         <Text>{post.votes}</Text>
         <IconButton
@@ -62,7 +66,7 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
           icon={<ArrowDownIcon />}
           isLoading={isVoteLoading}
           onClick={async () => vote(-1)}
-          variant="outline"
+          variant={(post.userVote === -1) ? 'solid' : 'outline'}
         />
       </Flex>
     </Box>

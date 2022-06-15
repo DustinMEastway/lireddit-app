@@ -1,8 +1,12 @@
 import { cacheExchange, Cache, QueryInput } from '@urql/exchange-graphcache';
+import { gql } from 'graphql-tag';
 import { withUrqlClient as nextUrqlWithUrqlClient } from 'next-urql';
 import { dedupExchange, fetchExchange  } from 'urql';
 
 import {
+  PostSummaryFragment,
+  PostSummaryFragmentDoc,
+  UpdootVoteMutationVariables,
   UserCreateMutation,
   UserDetailsDocument,
   UserDetailsQuery,
@@ -37,6 +41,27 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
         },
         updates: {
           Mutation: {
+            updootVote: (result, args, cache, info) => {
+              const { postId, vote } = (args as UpdootVoteMutationVariables).input;
+              const post = cache.readFragment(
+                PostSummaryFragmentDoc,
+                { id: postId }
+              ) as PostSummaryFragment | null;
+
+              if (!post) {
+                return;
+              }
+
+              post.votes = post.votes + (vote - post.userVote);
+              post.userVote = vote;
+
+              cache.writeFragment(gql`
+                fragment _ on Post {
+                  votes
+                  userVote
+                }
+              `, post);
+            },
             postCreate: (_result, _args, cache, _info) => {
               cache.inspectFields('Query').filter((fieldInfo) => {
                 return fieldInfo.fieldName === 'postList'
