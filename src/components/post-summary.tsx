@@ -53,18 +53,18 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
       >
         <IconButton
           aria-label="Vote Up"
+          colorScheme={(post.userVote === 1) ? 'green' : undefined}
           icon={<ArrowUpIcon />}
           isLoading={isVoteLoading}
           onClick={() => vote(1)}
-          variant={(post.userVote === 1) ? 'solid' : 'outline'}
         />
         <Text>{post.votes}</Text>
         <IconButton
           aria-label="Vote Down"
+          colorScheme={(post.userVote === -1) ? 'red' : undefined}
           icon={<ArrowDownIcon />}
           isLoading={isVoteLoading}
           onClick={async () => vote(-1)}
-          variant={(post.userVote === -1) ? 'solid' : 'outline'}
         />
       </Flex>
     </Box>
