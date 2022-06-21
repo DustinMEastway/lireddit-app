@@ -5,6 +5,7 @@ import {
   Stack
 } from '@chakra-ui/layout';
 import { CircularProgress } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 import {
@@ -21,6 +22,7 @@ const defaultPostListInput: PostListInput = {
 };
 
 export const Index: React.FC = () => {
+  const router = useRouter();
   const [ pagination, setPagination ] = useState(defaultPostListInput);
   const [ { data, fetching, stale } ] = usePostListQuery({ variables: { input: pagination } });
   const posts = data?.postList.items;
@@ -50,7 +52,6 @@ export const Index: React.FC = () => {
 
   return <Page>
     <Flex align="center" marginBottom="2rem">
-      <Heading>LiReddit</Heading>
       <Link label="Create Post" marginLeft="auto" route="/create-post">
         Create Post &gt;
       </Link>
@@ -58,7 +59,13 @@ export const Index: React.FC = () => {
     {(!posts) ? null : (
       <Stack spacing="1rem">
         {posts.map((post) =>
-          <PostSummary key={post.id} post={post} />
+          <PostSummary
+            key={post.id}
+            onClick={() => {
+              router.push(`/post/${post.id}`);
+            }}
+            post={post}
+          />
         )}
       </Stack>
     )}

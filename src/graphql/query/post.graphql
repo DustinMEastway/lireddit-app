@@ -1,0 +1,6 @@
+query Post($input: PostInput!) {
+  post(input: $input) {
+    ...PostSummary,
+    text
+  }
+}

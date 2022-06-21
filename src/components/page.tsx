@@ -19,7 +19,7 @@ export const Page: React.FC<PageProps> = ({
   const [ { fetching: fetchingUser } ] = useUserDetailsQuery();
 
   return <Loading isLoading={!areGuardsPassed || fetchingUser}>
-    <NavBar />
+    <NavBar size={size} />
     <Wrapper size={size}>
       {children}
     </Wrapper>

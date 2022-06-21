@@ -13,10 +13,14 @@ import { useState } from 'react';
 import { useUpdootVoteMutation, PostSummaryFragment } from '../generated/graphql';
 
 export interface PostSummaryProps {
+  onClick: () => void;
   post: PostSummaryFragment;
 }
 
-export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
+export const PostSummary: React.FC<PostSummaryProps> = ({
+  onClick,
+  post
+}) => {
   const [ { fetching: isVoteLoading } , updootVote ] = useUpdootVoteMutation();
 
   const vote = async (vote: number) => {
@@ -27,7 +31,9 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
 
   return (
     <Box
-      borderWidth="1px"
+      className="hoverBorder"
+      cursor="pointer"
+      onClick={onClick}
       shadow="md"
     >
       <Box padding="1rem">
@@ -56,7 +62,10 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
           colorScheme={(post.userVote === 1) ? 'green' : undefined}
           icon={<ArrowUpIcon />}
           isLoading={isVoteLoading}
-          onClick={() => vote(1)}
+          onClick={(e) => {
+            e.stopPropagation();
+            vote(1);
+          }}
         />
         <Text>{post.votes}</Text>
         <IconButton
@@ -64,7 +73,10 @@ export const PostSummary: React.FC<PostSummaryProps> = ({ post }) => {
           colorScheme={(post.userVote === -1) ? 'red' : undefined}
           icon={<ArrowDownIcon />}
           isLoading={isVoteLoading}
-          onClick={async () => vote(-1)}
+          onClick={(e) => {
+            e.stopPropagation();
+            vote(-1);
+          }}
         />
       </Flex>
     </Box>

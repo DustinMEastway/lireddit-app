@@ -1,3 +1,11 @@
+.hoverBorder {
+  border: var(--hoverBorderWidth, 1px) solid var(--hoverBorderDefaultColor, transparent);
+}
+
+.hoverBorder:hover {
+  border-color: var(--hoverBorderColor, black);
+}
+
 .spaced-rows > *:not(:first-child) {
   margin-top: 1em;
 }
