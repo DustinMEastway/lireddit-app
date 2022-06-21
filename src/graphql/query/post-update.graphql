@@ -1,0 +1,6 @@
+mutation PostUpdate($input: PostUpdateInput!) {
+  postUpdate(input: $input) {
+    ...PostSummary,
+    text
+  }
+}

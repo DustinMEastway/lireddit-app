@@ -4,11 +4,11 @@ import { useToast } from '@chakra-ui/toast';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 
-import { InputField, Page } from '../components';
-import { withUrqlClient } from '../core';
-import { useAuthenticatedGuard } from '../guards';
-import { usePostCreateMutation } from '../generated/graphql';
-import { handleFormErrorMessages } from '../lib/client';
+import { InputField, Page } from '../../components';
+import { withUrqlClient } from '../../core';
+import { useAuthenticatedGuard } from '../../guards';
+import { usePostCreateMutation } from '../../generated/graphql';
+import { handleFormErrorMessages } from '../../lib/client';
 
 const createPostGuards = [ useAuthenticatedGuard ];
 

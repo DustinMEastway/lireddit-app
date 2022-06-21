@@ -1,5 +1,5 @@
-import { DeleteIcon } from '@chakra-ui/icons';
-import { Flex, Heading, Stack } from '@chakra-ui/layout';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { Heading, Stack } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
 import { useRouter } from 'next/router';
 
@@ -8,7 +8,7 @@ import {
   usePostDeleteMutation,
   useUserDetailsQuery
 } from '../../generated/graphql';
-import { Link, Page } from '../../components';
+import { Errors, Link, Loading, Page } from '../../components';
 import { withUrqlClient } from '../../core';
 
 export interface PostDetailsPageProps {
@@ -26,18 +26,9 @@ export const PostDetailsPage: React.FC<PostDetailsPageProps> = ({}) => {
   let content: JSX.Element | string;
 
   if (!post && !postError) {
-    content = <Flex align="center" direction="column">
-      Loading...
-    </Flex>;
+    content = <Loading isLoading />;
   } else if (!post?.post) {
-    content = <Flex align="center" direction="column">
-      {postError?.graphQLErrors.join(' ') ?? 'An unknown error occurred.'}
-      <Link
-        label="Click here to go to post list."
-        route="/"
-        marginLeft=".25em"
-      />
-    </Flex>;
+    content = <Errors errors={postError} />;
   } else {
     const { creator, text, title } = post.post;
 
@@ -45,20 +36,31 @@ export const PostDetailsPage: React.FC<PostDetailsPageProps> = ({}) => {
       <Heading as="h2">{title}</Heading>
       <>{text}</>
       <Stack direction="row" justifyContent="end">
-        {(creator.id !== userDetails?.userDetails?.id) ? null : <Button
-          aria-label="Delete Post"
-          colorScheme="red"
-          isLoading={postDeleteLoading}
-          leftIcon={<DeleteIcon />}
-          onClick={async (e) => {
-            const postDeleteResponse = await postDelete({ input: { id } });
-            if (postDeleteResponse.data?.postDelete) {
-              router.back();
-            }
-          }}
-        >
-          Delete Post
-        </Button>}
+        {(creator.id !== userDetails?.userDetails?.id) ? null : <>
+          <Button
+            aria-label="Edit Post"
+            leftIcon={<EditIcon />}
+            onClick={() => {
+              router.push(`/post/edit/${id}`);
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            aria-label="Delete Post"
+            colorScheme="red"
+            isLoading={postDeleteLoading}
+            leftIcon={<DeleteIcon />}
+            onClick={async () => {
+              const postDeleteResponse = await postDelete({ input: { id } });
+              if (postDeleteResponse.data?.postDelete) {
+                router.back();
+              }
+            }}
+          >
+            Delete Post
+          </Button>
+        </>}
       </Stack>
     </Stack>;
   }

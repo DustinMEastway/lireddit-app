@@ -52,7 +52,7 @@ export const Index: React.FC = () => {
 
   return <Page>
     <Flex align="center" marginBottom="2rem">
-      <Link label="Create Post" marginLeft="auto" route="/create-post">
+      <Link label="Create Post" marginLeft="auto" route="/post/create">
         Create Post &gt;
       </Link>
     </Flex>
