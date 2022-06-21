@@ -59,7 +59,7 @@ export const PostSummary: React.FC<PostSummaryProps> = ({
       >
         <IconButton
           aria-label="Vote Up"
-          colorScheme={(post.userVote === 1) ? 'green' : undefined}
+          colorScheme={(post.userVote === 1) ? 'blue' : undefined}
           icon={<ArrowUpIcon />}
           isLoading={isVoteLoading}
           onClick={(e) => {

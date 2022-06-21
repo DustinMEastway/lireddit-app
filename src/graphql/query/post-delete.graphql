@@ -1,0 +1,3 @@
+mutation PostDelete($input: PostDeleteInput!) {
+  postDelete(input: $input)
+}

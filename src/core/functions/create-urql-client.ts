@@ -1,9 +1,12 @@
-import { cacheExchange, Cache, QueryInput } from '@urql/exchange-graphcache';
+import { cacheExchange, Cache, Entity, QueryInput } from '@urql/exchange-graphcache';
 import { gql } from 'graphql-tag';
 import { withUrqlClient as nextUrqlWithUrqlClient } from 'next-urql';
 import { dedupExchange, fetchExchange  } from 'urql';
 
 import {
+  Post,
+  PostDeleteMutation,
+  PostDeleteMutationVariables,
   PostSummaryFragment,
   PostSummaryFragmentDoc,
   UpdootVoteMutationVariables,
@@ -68,6 +71,18 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
               }).forEach((fieldInfo) => {
                 cache.invalidate('Query', 'postList', fieldInfo.arguments);
               });
+            },
+            postDelete: (result, args, cache, _info) => {
+              if (!(result as PostDeleteMutation).postDelete) {
+                return;
+              }
+
+              const deletedPost: Partial<Post> & Entity = {
+                __typename: 'Post',
+                id: (args as PostDeleteMutationVariables).input.id
+              };
+
+              cache.invalidate(deletedPost);
             },
             userCreate: (result, args, cache, info) => {
               // update userDetails when userCreate is called
