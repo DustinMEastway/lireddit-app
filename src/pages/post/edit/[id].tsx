@@ -50,7 +50,14 @@ export const EditPostPage: React.FC = () => {
         <InputField label="Title" name="title" />
         <InputField label="Text" name="text" textarea />
         <Stack direction="row" justifyContent="end" spacing="1rem">
-          <Button isLoading={isSubmitting} type="submit">Save</Button>
+          <Button isLoading={isSubmitting} onClick={() => router.back()}>
+            Cancel
+          </Button>
+          <Button
+            colorScheme="blue"
+            isLoading={isSubmitting}
+            type="submit"
+          >Save</Button>
         </Stack>
       </Form>
     )}</Formik>;

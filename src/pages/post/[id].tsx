@@ -1,5 +1,5 @@
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Heading, Stack } from '@chakra-ui/layout';
+import { Heading, Stack, Text } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
 import { useRouter } from 'next/router';
 
@@ -32,13 +32,14 @@ export const PostDetailsPage: React.FC<PostDetailsPageProps> = ({}) => {
   } else {
     const { creator, text, title } = post.post;
 
-    content = <Stack>
+    content = <Stack spacing="1em">
       <Heading as="h2">{title}</Heading>
-      <>{text}</>
+      <Text whiteSpace="pre-wrap">{text}</Text>
       <Stack direction="row" justifyContent="end">
         {(creator.id !== userDetails?.userDetails?.id) ? null : <>
           <Button
             aria-label="Edit Post"
+            isLoading={postDeleteLoading}
             leftIcon={<EditIcon />}
             onClick={() => {
               router.push(`/post/edit/${id}`);
