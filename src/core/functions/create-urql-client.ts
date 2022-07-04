@@ -19,6 +19,14 @@ import {
 import { authenticationErrorExchange } from './exchanges';
 import { cursorPagination } from './resolvers';
 
+function invalidateAll(cache: Cache, entity: Entity, fieldName?: string) {
+  cache.inspectFields(entity).filter((fieldInfo) => {
+    return !fieldName || fieldInfo.fieldName === fieldName
+  }).forEach((fieldInfo) => {
+    cache.invalidate(entity, fieldName, fieldInfo.arguments);
+  });
+}
+
 function updateQuery<ResultT, QueryT>(
   cache: Cache,
   queryInput: QueryInput,
@@ -45,6 +53,7 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
         updates: {
           Mutation: {
             updootVote: (result, args, cache, info) => {
+              // Update vote on post when user votes.
               const { postId, vote } = (args as UpdootVoteMutationVariables).input;
               const post = cache.readFragment(
                 PostSummaryFragmentDoc,
@@ -66,13 +75,11 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
               `, post);
             },
             postCreate: (_result, _args, cache, _info) => {
-              cache.inspectFields('Query').filter((fieldInfo) => {
-                return fieldInfo.fieldName === 'postList'
-              }).forEach((fieldInfo) => {
-                cache.invalidate('Query', 'postList', fieldInfo.arguments);
-              });
+              // Invalidate all posts so that that the new one can be fetched.
+              invalidateAll(cache, 'Query', 'postList');
             },
             postDelete: (result, args, cache, _info) => {
+              // Remove the deleted post from the cache.
               if (!(result as PostDeleteMutation).postDelete) {
                 return;
               }
@@ -85,7 +92,7 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
               cache.invalidate(deletedPost);
             },
             userCreate: (result, args, cache, info) => {
-              // update userDetails when userCreate is called
+              // Update userDetails when userCreate is called.
               updateQuery<UserCreateMutation, UserDetailsQuery>(
                 cache,
                 { query: UserDetailsDocument },
@@ -96,7 +103,7 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
               );
             },
             userLogin: (result, args, cache, info) => {
-              // update userDetails when userLogin is called
+              // Update userDetails when userLogin is called.
               updateQuery<UserLoginMutation, UserDetailsQuery>(
                 cache,
                 { query: UserDetailsDocument },
@@ -105,9 +112,11 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
                   return { userDetails: loginResult.userLogin };
                 }
               );
+              // Invalidate all posts so they are fetched for the current user.
+              invalidateAll(cache, 'Query', 'postList');
             },
             userLogout: (result, args, cache, info) => {
-              // update userDetails when userLogout is called
+              // Update userDetails when userLogout is called.
               updateQuery<UserLogoutMutation, UserDetailsQuery>(
                 cache,
                 { query: UserDetailsDocument },
@@ -116,6 +125,8 @@ export function createUrqlClient<SsrExchangeT>(ssrExchange: SsrExchangeT) {
                   return { userDetails: null };
                 }
               );
+              // Invalidate all posts so they are fetched for the current user.
+              invalidateAll(cache, 'Query', 'postList');
             }
           }
         }
